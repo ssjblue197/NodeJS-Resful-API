@@ -11,6 +11,18 @@ const userSchema = mongoose.Schema(
             required: true,
             trim: true,
         },
+        phoneNumber: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            lowercase: true,
+            validate(value) {
+                if (!value.match(/(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/)) {
+                    throw new Error('Phone number is not valid.')
+                }
+            },
+        },
         email: {
             type: String,
             required: true,

@@ -4,6 +4,17 @@ const ApiError = require('../../utils/api-error')
 const { User } = require('../models')
 
 /**
+ * Get all users
+ * @returns {Promise<Users>}
+ */
+const getUsers = async () => {
+    if (await User.isEmailTaken(userBody.email)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken')
+    }
+    return User.find({})
+}
+
+/**
  * Create a user
  * @param {Object} userBody
  * @returns {Promise<User>}
