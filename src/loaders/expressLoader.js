@@ -59,7 +59,18 @@ module.exports = () => {
     // handle error
     app.use(errorHandler)
 
-    app.listen(env.app.port)
+    // app.listen(env.app.port)
 
+    //Config SocketIO run same port with Express
+    const server = require('http').createServer(app)
+    const io = require('socket.io')(server, {
+        cors: {
+            origin: 'http://localhost:5173',
+        },
+    })
+    io.on('connection', () => {
+        console.log('Connected')
+    })
+    server.listen(env.app.port)
     return app
 }

@@ -27,6 +27,7 @@ const env = {
         routePrefix: getOsEnv('APP_ROUTE_PREFIX'),
         port: normalizePort(process.env.PORT || getOsEnv('APP_PORT')),
         banner: toBool(getOsEnv('APP_BANNER')),
+        socketPort: getOsEnv('APP_SOCKET_PORT') || 1386,
     },
     database: {
         connection: getOsEnv('DB_CONNECTION'),
@@ -46,6 +47,10 @@ const env = {
         jwtToken: getOsEnv('PASSPORT_JWT'),
         jwtAccessExpired: toNumber(getOsEnv('PASSPORT_JWT_ACCESS_EXPIRED')),
         jwtRefreshExpired: toNumber(getOsEnv('PASSPORT_JWT_REFRESH_EXPIRED')),
+        googlePlusClientID: getOsEnv('GOOGLE_CLIENTID'),
+        googlePlusSecert: getOsEnv('GOOGLE_SECRET'),
+        facebookClientID: getOsEnv('FACEBOOK_CLIENTID'),
+        facebookSecert: getOsEnv('FACEBOOK_SECRET'),
     },
     swagger: {
         enabled: toBool(getOsEnv('SWAGGER_ENABLED')),

@@ -1,5 +1,5 @@
 const express = require('express')
-
+const passport = require('passport')
 const { authController } = require('../controllers')
 const { authValidation } = require('../validations')
 
@@ -7,9 +7,23 @@ const validate = require('../../middlewares/validate')
 
 const router = express.Router()
 
-router.post('/login', validate(authValidation.loginSchema), authController.login)
-router.post('/logout', validate(authValidation.logoutSchema), authController.logout)
-router.post('/register', validate(authValidation.registerSchema), authController.register)
+router.post('/login', validate(authValidation.loginSchema), authController.Login)
+router.post(
+    '/logout',
+    passport.authenticate('jwt', { session: false }),
+    validate(authValidation.logoutSchema),
+    authController.Logout
+)
+router.post('/register', validate(authValidation.registerSchema), authController.Register)
+router.post('/google', passport.authenticate('google-plus-token', { session: false }), authController.AuthGoogle)
+router.post('/facebook', passport.authenticate('facebook-token', { session: false }), authController.AuthFacebook)
+
+router.post(
+    '/refresh-token',
+    // passport.authenticate('jwt', { session: false }),
+    validate(authValidation.refreshTokenSchema),
+    authController.RefreshTokens
+)
 
 module.exports = router
 
@@ -33,7 +47,6 @@ module.exports = router
  *           schema:
  *             type: object
  *             required:
- *               - displayName
  *               - email
  *               - password
  *             properties:

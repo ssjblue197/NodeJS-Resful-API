@@ -8,12 +8,52 @@ const userSchema = mongoose.Schema(
     {
         displayName: {
             type: String,
-            required: true,
-            trim: true,
+            maxLength: 64,
+            // required: true,
+            default: '',
+        },
+        firstName: {
+            type: String,
+            maxLength: 64,
+            // required: true,
+        },
+        lastName: {
+            type: String,
+            maxLength: 64,
+            // required: true,
+        },
+        dateOfBirth: {
+            type: Date,
+        },
+        lastLogin: {
+            type: Date,
+        },
+        status: {
+            type: String,
+            enum: ['online', 'offline', 'busy'],
+        },
+        description: {
+            type: String,
+            default: '',
+        },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+        role: {
+            type: String,
+            enum: ['admin', 'user', 'mod'],
+        },
+        profileImageUrl: {
+            type: String,
+            default: '',
+        },
+        coverImageUrl: {
+            type: String,
+            default: '',
         },
         phoneNumber: {
             type: String,
-            required: true,
             unique: true,
             trim: true,
             lowercase: true,
@@ -37,7 +77,7 @@ const userSchema = mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
+            // required: true,
             trim: true,
             minlength: 6,
             validate(value) {
@@ -47,10 +87,47 @@ const userSchema = mongoose.Schema(
             },
             private: true,
         },
-        isEmailVerified: {
+        authType: {
+            type: String,
+            enum: ['local', 'google', 'facebook', 'twitter'],
+            default: 'local',
+        },
+        authGoogleID: {
+            type: String,
+            default: null,
+        },
+        authFacebookID: {
+            type: String,
+            default: null,
+        },
+        isVerified: {
             type: Boolean,
             default: false,
         },
+        followerList: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        followingList: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        friendList: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        blackList: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     {
         timestamps: true,
@@ -71,6 +148,11 @@ userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
     return !!user
 }
 
+userSchema.statics.isPhoneNumberTaken = async function (phoneNumber, excludeUserId) {
+    const user = await this.findOne({ phoneNumber, _id: { $ne: excludeUserId } })
+    return !!user
+}
+
 /**
  * Check if password matches the user's password
  * @param {string} password
@@ -83,8 +165,10 @@ userSchema.methods.isPasswordMatch = async function (password) {
 
 userSchema.pre('save', async function (next) {
     const user = this
+    if (this.authType !== 'local') next()
     if (user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 10)
+        const salt = await bcrypt.genSalt(10)
+        user.password = await bcrypt.hash(user.password, salt)
     }
     next()
 })
