@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema(
         lastLogin: {
             type: Date,
         },
+        gender: {
+            type: String,
+            enum: ['male', 'female'],
+        },
         status: {
             type: String,
             enum: ['online', 'offline', 'busy'],
