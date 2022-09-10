@@ -4,6 +4,7 @@ const catchAsync = require('../../utils/catch-async')
 const { authService, tokenService, userService } = require('../services')
 
 const Register = catchAsync(async (req, res) => {
+    console.log(req.body);
     const user = await userService.createUser(req.body)
     const tokens = await tokenService.generateAuthTokens(user)
     res.status(httpStatus.CREATED).send({ user, tokens })

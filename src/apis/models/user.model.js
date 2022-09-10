@@ -58,7 +58,6 @@ const userSchema = mongoose.Schema(
         },
         phoneNumber: {
             type: String,
-            unique: true,
             trim: true,
             lowercase: true,
             validate(value) {
@@ -152,8 +151,8 @@ userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
     return !!user
 }
 
-userSchema.statics.isPhoneNumberTaken = async function (phoneNumber, excludeUserId) {
-    const user = await this.findOne({ phoneNumber, _id: { $ne: excludeUserId } })
+userSchema.statics.isPhoneNumberTaken = async function (phoneNumber) {
+    const user = await this.findOne({ phoneNumber: phoneNumber})
     return !!user
 }
 
