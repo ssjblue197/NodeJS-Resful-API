@@ -6,18 +6,23 @@ const { Message, Conversation } = require('../models')
  * @returns {Promise<Message>}
  */
 const sendMessage = async (messageBody) => {
-    return Message.create(messageBody)
+    const conversationID = messageBody.conversationID
+    const conversation = await Conversation.findById(conversationID)
+    const newMessage = await Message.create(messageBody)
+    conversation.lastMessage = newMessage._id
+    await conversation.save()
+    return newMessage
 }
 
 const getMessagesOfConversation = async (userID, conversationID) => {
-    const messages = await Message.find({
+    return await Message.find({
         conversationID: conversationID,
         deletedBy: {
             $nin: [userID],
         },
     })
-    console.log(messages)
-    return messages
+        .populate('seenBy')
+        .populate('sender')
 }
 
 const updateMessage = async (id, messageBody) => {

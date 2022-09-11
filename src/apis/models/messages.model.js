@@ -9,8 +9,8 @@ const messageSchema = mongoose.Schema(
             required: true,
         },
         sender: {
-            type: String,
-            required: true,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
         },
         messageType: {
             type: String,
@@ -25,6 +25,12 @@ const messageSchema = mongoose.Schema(
             default: false,
         },
         deletedBy: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        seenBy: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',

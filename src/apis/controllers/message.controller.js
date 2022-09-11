@@ -6,6 +6,7 @@ const { messageService } = require('../services')
 const GetMessageOfConversation = catchAsync(async (req, res) => {
     const { userID, conversationID } = req.params
     const data = await messageService.getMessagesOfConversation(userID, conversationID)
+    console.log(data)
     res.status(httpStatus.OK).send({ data })
 })
 

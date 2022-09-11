@@ -28,6 +28,9 @@ const getConversationsOfUser = async (userID) => {
             $nin: [userID],
         },
     })
+        .populate('memberList')
+        .populate('lastMessage')
+        .populate('lastMessage')
 }
 
 const updateConversation = async (id, conversationBody) => {
