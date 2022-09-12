@@ -68,8 +68,33 @@ module.exports = () => {
             origin: 'http://localhost:8080',
         },
     })
-    io.on('connection', () => {
-        console.log('Connected')
+
+    let userList = [];
+    const addUser = (userID, socketID) => {
+        !userList.some(user => user.userID === userID) && userList.push({userID, socketID});
+        io.emit('getUser', userList);
+    }
+
+    io.on('connection', (socket) => {
+        console.log('Connected', socket.id)
+        io.to(socket.id).emit('return ID', {
+            id: socket.id
+        })
+        // receive a message from the client
+        socket.on("message", (data) => {
+            const packet = JSON.parse(data);
+
+            switch (packet.type) {
+            case "hello from client":
+                // ...
+                break;
+            }
+        });
+
+        socket.on("addUser", (userID) => {
+            console.log('them user', userID);
+            addUser(userID, socket.id)
+        });
     })
     server.listen(env.app.port)
     return app

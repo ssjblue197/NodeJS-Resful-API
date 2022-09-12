@@ -8,7 +8,8 @@ const { Message, Conversation } = require('../models')
 const sendMessage = async (messageBody) => {
     const conversationID = messageBody.conversationID
     const conversation = await Conversation.findById(conversationID)
-    const newMessage = await Message.create(messageBody)
+    let newMessage = await Message.create(messageBody);
+    newMessage = await newMessage.populate('sender');
     conversation.lastMessage = newMessage._id
     await conversation.save()
     return newMessage

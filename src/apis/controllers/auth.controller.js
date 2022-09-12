@@ -4,21 +4,21 @@ const catchAsync = require('../../utils/catch-async')
 const { authService, tokenService, userService } = require('../services')
 
 const Register = catchAsync(async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const user = await userService.createUser(req.body)
     const tokens = await tokenService.generateAuthTokens(user)
     res.status(httpStatus.CREATED).send({ user, tokens })
 })
 
 const AuthGoogle = catchAsync(async (req, res) => {
-    console.log(req.user)
+    // console.log(req.user)
     const user = req.user
     const tokens = await tokenService.generateAuthTokens(user)
     res.send({ user, tokens })
 })
 
 const AuthFacebook = catchAsync(async (req, res) => {
-    console.log(req.user)
+    // console.log(req.user)
     const user = req.user
     const tokens = await tokenService.generateAuthTokens(user)
     res.send({ user, tokens })

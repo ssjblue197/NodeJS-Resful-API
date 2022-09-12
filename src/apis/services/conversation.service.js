@@ -40,7 +40,7 @@ const updateConversation = async (id, conversationBody) => {
         conversation[key] = conversationBody[key]
     })
 
-    console.log('conversation: ', conversation)
+    // console.log('conversation: ', conversation)
 
     await conversation.save()
 

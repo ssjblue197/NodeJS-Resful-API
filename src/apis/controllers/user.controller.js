@@ -32,7 +32,7 @@ const GetUserById = catchAsync(async (req, res) => {
 })
 
 const GetFriendListOfUser = catchAsync(async (req, res) => {
-    console.log(req)
+    // console.log(req)
     const user = await userService.getUserById(req.params.id)
     const data = user.friendList
     res.status(httpStatus.OK).send({ data })
