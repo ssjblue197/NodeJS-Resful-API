@@ -65,8 +65,8 @@ module.exports = () => {
     const server = require('http').createServer(app)
     const io = require('socket.io')(server, {
         cors: {
-            origin: 'http://localhost:8080',
-        },
+            origin: ['http://10.2.26.70:8080'],
+        }
     })
 
     let userList = [];
@@ -75,27 +75,39 @@ module.exports = () => {
         io.emit('getUser', userList);
     }
 
+    const removeUser = (socketID) => {
+        userList = userList.filter(user => user[1] === socketID)
+    }
+    // WHEN CLIENT CONNECT TO WS
     io.on('connection', (socket) => {
         console.log('Connected', socket.id)
         io.to(socket.id).emit('return ID', {
             id: socket.id
         })
-        // receive a message from the client
-        socket.on("message", (data) => {
-            const packet = JSON.parse(data);
 
-            switch (packet.type) {
-            case "hello from client":
-                // ...
-                break;
+        socket.on("joinRoom", (data) => {
+            addUser(data.userID, socket.id)
+            console.log('UserID', data.userID);
+            if (data.roomList && data.roomList.length > 0) {
+                for (const room of data.roomList) {
+                    socket.join(room.id)
+                }
             }
-        });
+            console.log(socket.rooms);
+        })
+        socket.on("sendMessage", (data) => {
+            socket.to(data.conversationID).emit("newMessage");
+        })
 
-        socket.on("addUser", (userID) => {
-            console.log('them user', userID);
-            addUser(userID, socket.id)
-        });
+        socket.on('disconnect', () => {
+            removeUser(socket.id);
+        })
     })
+
+    io.engine.on("connection_error", (err) => {   // the error code, for example 1
+        console.log(err.message);  // the error message, for example "Session ID unknown"
+      });
+
     server.listen(env.app.port)
     return app
 }

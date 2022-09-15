@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const validator = require('validator')
 
 const { toJSON, paginate } = require('./plugins')
+const {string}=require('joi')
 
 const userSchema = mongoose.Schema(
     {
@@ -23,7 +24,7 @@ const userSchema = mongoose.Schema(
             // required: true,
         },
         dateOfBirth: {
-            type: Date,
+            type: String,
         },
         lastLogin: {
             type: Date,
@@ -47,6 +48,7 @@ const userSchema = mongoose.Schema(
         role: {
             type: String,
             enum: ['admin', 'user', 'mod'],
+            default: 'user'
         },
         profileImageUrl: {
             type: String,

@@ -31,7 +31,7 @@ const registerSchema = {
         firstName: Joi.string().required().min(1).max(64),
         lastName: Joi.string().required().min(1).max(64),
         gender: Joi.string().required(),
-        // dateOfBirth: Joi.string().required(),
+        dateOfBirth: Joi.string().required(),
     }),
 }
 
